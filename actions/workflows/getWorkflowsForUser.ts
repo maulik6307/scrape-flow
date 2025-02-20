@@ -11,7 +11,7 @@ export async function GetWorkflowsForUser() {
         throw new Error("Unauthenticated");
     }
 
-    return prisma.workflow.findMany({
+    return await prisma.workflow.findMany({
         where: {
             userId
         },
