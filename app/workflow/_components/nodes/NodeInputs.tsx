@@ -1,9 +1,10 @@
 import { cn } from '@/lib/utils'
 import { TaskParam } from '@/types/task'
-import { Handle, Position } from '@xyflow/react'
+import { Handle, Position, useEdges } from '@xyflow/react'
 import React, { ReactNode } from 'react'
 import NodeParamField from './NodeParamField'
 import { ColorForHandle } from './Common'
+import useFlowValidation from '@/components/hooks/useFlowValidation'
 
 const NodeInputs = ({ children }: { children: ReactNode }) => {
     return (
@@ -14,11 +15,18 @@ const NodeInputs = ({ children }: { children: ReactNode }) => {
 export default NodeInputs
 
 export const NodeInput = ({ input, nodeId }: { input: TaskParam, nodeId: string }) => {
+    const { invalidInputs } = useFlowValidation()
+    const edges = useEdges()
+    const isConnected = edges.some(edge => edge.target === nodeId && edge.targetHandle === input.name)
+
+    const hasErrors = invalidInputs.find(input => input.nodeId === nodeId)?.inputs.find((invalidInputs) => invalidInputs === input.name)
     return (
-        <div className='flex justify-start relative p-3 bg-secondary w-full'>
-            <NodeParamField param={input} nodeId={nodeId} />
+        <div className={cn("flex justify-start relative p-3 bg-secondary w-full",
+            hasErrors && "bg-destructive/30"
+        )}>
+            <NodeParamField param={input} nodeId={nodeId} disabled={isConnected} />
             {
-                !input.hideHandle && <Handle id={input.name} type='target' position={Position.Left} className={cn("!bg-muted-foreground !border-2 !border-background !-left-2 !w-3 !h-3",
+                !input.hideHandle && <Handle id={input.name} isConnectable={!isConnected} type='target' position={Position.Left} className={cn("!bg-muted-foreground !border-2 !border-background !-left-2 !w-3 !h-3",
                     ColorForHandle[input.type]
                 )} />
             }
