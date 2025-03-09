@@ -18,6 +18,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { cn } from '@/lib/utils';
 import { LogLevel } from '@/types/log';
 import PhaseStatusBadge from './PhaseStatusBadge';
+import ReactCountWrapper from '@/components/ReactCountWrapper';
 
 type ExecutionData = Awaited<ReturnType<typeof GetWorkflowExecutionWithPhases>>
 
@@ -60,7 +61,14 @@ const ExecutionViewer = ({ initialData }: { initialData: ExecutionData }) => {
         <div className='flex w-full h-full'>
             <aside className='w-[440px] min-w-[440px] max-w-[440px] border-r-2 border-separate flex flex-grow flex-col overflow-hidden'>
                 <div className='py-4 px-2'>
-                    <ExecutionLabel icon={CircleDashedIcon} label="Status" value={query.data?.status} />
+                    <ExecutionLabel icon={CircleDashedIcon} label="Status" value={
+                        <div className='flex font-semibold capitalize gap-2 items-center'>
+                            <PhaseStatusBadge status={query.data?.status as ExecutionPhaseStatus} />
+                            <span>
+                                {query.data?.status}
+                            </span>
+                        </div>
+                    } />
                     <ExecutionLabel icon={CalendarIcon} label="Started at" value=
                         {
                             <span className='lowercase'>
@@ -71,7 +79,7 @@ const ExecutionViewer = ({ initialData }: { initialData: ExecutionData }) => {
                         }
                     />
                     <ExecutionLabel icon={ClockIcon} label="Duration" value={duration ? duration : <Loader2Icon className='animate-spin' size={20} />} />
-                    <ExecutionLabel icon={CoinsIcon} label="Credits consumed" value={creditsConsumed} />
+                    <ExecutionLabel icon={CoinsIcon} label="Credits consumed" value={<ReactCountWrapper value={creditsConsumed} />} />
                 </div>
                 <Separator />
                 <div className='flex justify-center items-center py-2 px-4'>
@@ -129,7 +137,7 @@ const ExecutionViewer = ({ initialData }: { initialData: ExecutionData }) => {
                                         <CoinsIcon size={18} className='stroke-muted-foreground' />
                                         <span>Credits</span>
                                     </div>
-                                    <span>TODO</span>
+                                    <span>{phaseDetails.data.creditsConsumed}</span>
                                 </Badge>
                                 <Badge variant={"outline"} className='space-x-4'>
                                     <div className='flex gap-1 items-center'>

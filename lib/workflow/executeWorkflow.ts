@@ -14,7 +14,7 @@ import { Edge } from "@xyflow/react";
 import { LogCollector } from "@/types/log";
 import { createLogCollector } from "../log";
 
-export async function ExecuteWorkflow(executionId: string) {
+export async function ExecuteWorkflow(executionId: string, nextRunAt?: Date) {
     const execution = await prisma.workflowExecution.findUnique({
         where: {
             id: executionId
@@ -47,7 +47,7 @@ export async function ExecuteWorkflow(executionId: string) {
 
     const environment: Environment = { phases: {} }
 
-    await initializeWorkflowExecution(executionId, execution.workflowId)
+    await initializeWorkflowExecution(executionId, execution.workflowId, nextRunAt)
 
     await initializePhaseStauses(execution)
 
@@ -56,7 +56,8 @@ export async function ExecuteWorkflow(executionId: string) {
     let creditsConsumed = 0
     let executionFailed = false;
     for (const phase of execution.phases) {
-        const phaseExecution = await executeWorkflowPhase(phase, environment, edges)
+        const phaseExecution = await executeWorkflowPhase(phase, environment, edges, execution.userId)
+        creditsConsumed += phaseExecution.creditsConsumed
         if (!phaseExecution.success) {
             executionFailed = true;
             break;
@@ -70,7 +71,7 @@ export async function ExecuteWorkflow(executionId: string) {
     revalidatePath("/workflows/runs")
 }
 
-async function initializeWorkflowExecution(executionId: string, workflowId: string) {
+async function initializeWorkflowExecution(executionId: string, workflowId: string, nextRunAt?: Date) {
     await prisma.workflowExecution.update({
         where: {
             id: executionId
@@ -89,6 +90,7 @@ async function initializeWorkflowExecution(executionId: string, workflowId: stri
             lastRunAt: new Date(),
             lastRunStatus: WorkflowExecutionStatus.RUNNING,
             lastRunId: executionId,
+            ...(nextRunAt && { nextRunAt })
         }
     })
 }
@@ -132,7 +134,7 @@ async function finalizeWorkflowExecution(executionId: string, workflowId: string
 
 }
 
-async function executeWorkflowPhase(phase: ExecutionPhase, environment: Environment, edges: Edge[]) {
+async function executeWorkflowPhase(phase: ExecutionPhase, environment: Environment, edges: Edge[], userId: string) {
     const logCollector = createLogCollector()
     const startedAt = new Date()
     const node = JSON.parse(phase.node) as AppNode
@@ -150,17 +152,21 @@ async function executeWorkflowPhase(phase: ExecutionPhase, environment: Environm
     })
 
     const creditsRequired = TaskRegistry[node.data.type].credits;
-    console.log(`Credits required: ${creditsRequired}`);
 
-    const success = await executedPhase(phase, node, environment, logCollector)
+    let success = await decrementCredits(userId, creditsRequired, logCollector)
+    const creditsConsumed = success ? creditsRequired : 0
+    if (success) {
+        success = await executedPhase(phase, node, environment, logCollector)
+    }
+
 
     const outputs = environment.phases[node.id].outputs
-    await finalizePhase(phase.id, success, outputs, logCollector)
-    return { success }
+    await finalizePhase(phase.id, success, outputs, logCollector, creditsConsumed)
+    return { success, creditsConsumed }
 
 }
 
-async function finalizePhase(phaseId: string, success: boolean, outputs: any, logCollector: LogCollector) {
+async function finalizePhase(phaseId: string, success: boolean, outputs: any, logCollector: LogCollector, creditsConsumed: number) {
     const finalStatus = success ? ExecutionPhaseStatus.COMPLETED : ExecutionPhaseStatus.FAILED
 
     await prisma.executionPhase.update({
@@ -171,6 +177,7 @@ async function finalizePhase(phaseId: string, success: boolean, outputs: any, lo
             status: finalStatus,
             completeAt: new Date(),
             outputs: JSON.stringify(outputs),
+            creditsConsumed,
             logs: {
                 createMany: {
                     data: logCollector.getAll().map((log) => ({
@@ -236,5 +243,27 @@ function createExecutionEnvironment(node: AppNode, environment: Environment, log
 async function cleanupEnvironment(environment: Environment) {
     if (environment.browser) {
         await environment.browser.close().catch((err) => console.log(err))
+    }
+}
+
+async function decrementCredits(userId: string, amount: number, logCollector: LogCollector) {
+    try {
+        await prisma.userBalance.update({
+            where: {
+                userId,
+                credits: {
+                    gte: amount
+                }
+            },
+            data: {
+                credits: {
+                    decrement: amount
+                }
+            }
+        });
+        return true
+    } catch (error) {
+        logCollector.error("insufficient credits")
+        return false
     }
 }
