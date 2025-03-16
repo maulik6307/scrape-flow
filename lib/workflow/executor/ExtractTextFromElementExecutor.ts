@@ -21,12 +21,16 @@ export async function ExtractTextFromElementExecutor(
       const $ = cheerio.load(html)
       const element = $(selector);
 
-      if (!element) {
-         environment.log.error("element is required");
-         return false
+
+
+      if (element.length === 0) {
+         environment.log.error("No elements found with the provided selector");
+         return false;
       }
 
       const extractedText = $.text(element);
+      console.log("extractedText", extractedText);
+
       if (!extractedText) {
          environment.log.error("Extracted text is empty");
          return false
