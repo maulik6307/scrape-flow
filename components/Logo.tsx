@@ -11,10 +11,10 @@ const Logo = ({ fontSize = "text-2xl", iconSize = 20 }: { fontSize?: string, ico
             </div>
             <div>
                 <span className='bg-gradient-to-r from-emerald-500 to-emerald-600 bg-clip-text text-transparent'>
-                    Scrapy
+                    Scrape
                 </span>
                 <span className='text-stone-700 dark:text-stone-300'>
-                    Web
+                    Flow
                 </span>
             </div>
 
