@@ -6,6 +6,7 @@ import { Periods } from "@/types/analytics";
 import { ExecutionPhaseStatus, WorkflowExecutionStatus } from "@/types/workflow";
 import { auth } from "@clerk/nextjs/server";
 import { eachDayOfInterval, format } from "date-fns";
+import { redirect } from "next/navigation";
 
 type Stats = Record<string, {
     success: number,
@@ -17,7 +18,7 @@ export async function GetCreditsUsageInPeriod(period: Periods) {
     const { userId } = await auth()
 
     if (!userId) {
-        throw new Error("Unauthenticated")
+        redirect("/sign-in");
     }
 
     const dateRange = PeriodToDateRange(period)

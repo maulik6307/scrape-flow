@@ -9,7 +9,7 @@ import { redirect } from "next/navigation";
 export async function PurchaseCredits(packId: PackId) {
     const { userId } = await auth()
     if (!userId) {
-        throw new Error("Unauthenticated")
+        redirect("/sign-in");
     }
 
     const selectedPack = getCreditsPack(packId)

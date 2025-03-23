@@ -5,6 +5,8 @@ import prisma from "@/lib/prisma";
 import { Periods } from "@/types/analytics";
 import { WorkflowExecutionStatus } from "@/types/workflow";
 import { auth } from "@clerk/nextjs/server";
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 const { COMPLETED, FAILED } = WorkflowExecutionStatus
 
@@ -12,7 +14,7 @@ export async function GetStatsCardsValues(period: Periods) {
     const { userId } = await auth()
 
     if (!userId) {
-        throw new Error("Unauthenticated")
+        redirect("/sign-in");
     }
     const dateRange = PeriodToDateRange(period)
     const executions = await prisma.workflowExecution.findMany({

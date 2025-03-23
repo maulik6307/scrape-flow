@@ -3,12 +3,13 @@
 import prisma from "@/lib/prisma"
 import { stripe } from "@/lib/stripe/stripe"
 import { auth } from "@clerk/nextjs/server"
+import { redirect } from "next/navigation"
 
 export async function DownloadInvoice(id: string) {
     const { userId } = await auth()
 
     if (!userId) {
-        throw new Error("Unauthenticated")
+        redirect("/sign-in");
     }
 
     const purchase = await prisma.userPurchase.findUnique({

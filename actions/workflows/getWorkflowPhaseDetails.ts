@@ -2,12 +2,13 @@
 
 import prisma from "@/lib/prisma"
 import { auth } from "@clerk/nextjs/server"
+import { redirect } from "next/navigation";
 
 export async function GetWorkflowPhaseDetails(phaseId: string) {
     const { userId } = await auth()
 
     if (!userId) {
-        throw new Error("Unauthenticated")
+        redirect("/sign-in");
     }
 
     return prisma.executionPhase.findUnique({

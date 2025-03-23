@@ -3,12 +3,13 @@
 import prisma from "@/lib/prisma"
 import { Periods } from "@/types/analytics"
 import { auth } from "@clerk/nextjs/server"
+import { redirect } from "next/navigation"
 
 export async function GetPeriods() {
     const { userId } = await auth()
 
     if (!userId) {
-        throw new Error("Unauthenticated")
+        redirect("/sign-in");
     }
 
     const years = await prisma.workflowExecution.aggregate({

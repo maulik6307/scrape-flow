@@ -8,7 +8,7 @@ export async function SetupUser() {
     const { userId } = await auth()
 
     if (!userId) {
-        throw new Error("Unauthenticated")
+        redirect("/sign-in");
     }
 
     const balance = await prisma.userBalance.findUnique({

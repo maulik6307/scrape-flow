@@ -21,7 +21,7 @@ export async function CreateWorkflow(
     const { userId } = await auth();
 
     if (!userId) {
-        throw new Error("Unauthenticated")
+        redirect("/sign-in");
     }
 
     const initialFlow: { nodes: AppNode[]; edges: Edge[] } = {

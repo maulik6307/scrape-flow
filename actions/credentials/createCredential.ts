@@ -5,6 +5,7 @@ import prisma from "@/lib/prisma";
 import { createCredentialSchema, createCredentialSchemaType } from "@/schema/credenstial";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 export async function CreateCredential(form: createCredentialSchemaType) {
     const { success, data } = createCredentialSchema.safeParse(form)
@@ -15,7 +16,7 @@ export async function CreateCredential(form: createCredentialSchemaType) {
     const { userId } = await auth()
 
     if (!userId) {
-        throw new Error("Unauthenticated")
+        redirect("/sign-in");
     }
 
 

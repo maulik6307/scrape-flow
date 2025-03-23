@@ -21,7 +21,7 @@ export async function DuplicateWorkflow(
     const { userId } = await auth();
 
     if (!userId) {
-        throw new Error("Unauthenticated")
+        redirect("/sign-in");
     }
     const sourceWorkflow = await prisma.workflow.findUnique({
         where: {
