@@ -5,6 +5,7 @@ import { AlertCircle, InboxIcon } from 'lucide-react'
 import React, { Suspense } from 'react'
 import CreateWorkflowDialog from './_components/CreateWorkflowDialog'
 import WorkflowCard from './_components/WorkflowCard'
+export const dynamic = "force-dynamic";
 
 const page = () => {
     return (

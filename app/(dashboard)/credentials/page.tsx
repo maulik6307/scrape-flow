@@ -6,6 +6,7 @@ import React from 'react'
 import CreateCredentialDialog from './_components/CreateCredentialDialog'
 import { formatDistanceToNow } from 'date-fns'
 import DeleteCredentialDialog from './_components/DeleteCredentialDialog'
+export const dynamic = "force-dynamic";
 
 const CredentialsPage = () => {
     return (

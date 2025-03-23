@@ -10,6 +10,8 @@ import { GetCreditsUsageInPeriod } from "@/actions/analytics/getCreditsUsageInPe
 import CreditUsageChart from "./_components/CreditUsageChart"
 import { GetUserPurchaseHistory } from "@/actions/billing/getUserPurchaseHistory"
 import InvoiceBtn from "./_components/InvoiceBtn"
+export const dynamic = "force-dynamic";
+
 
 function BillingPage() {
     return (
