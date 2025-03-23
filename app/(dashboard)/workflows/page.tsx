@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { GetWorkflowsForUser } from '@/actions/workflows/getWorkflowsForUser'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -5,7 +6,7 @@ import { AlertCircle, InboxIcon } from 'lucide-react'
 import React, { Suspense } from 'react'
 import CreateWorkflowDialog from './_components/CreateWorkflowDialog'
 import WorkflowCard from './_components/WorkflowCard'
-export const dynamic = "force-dynamic";
+
 
 const page = () => {
     return (

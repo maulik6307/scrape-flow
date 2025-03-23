@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { GetPeriods } from '@/actions/analytics/getPeriods'
 import React, { Suspense } from 'react'
 import PeriodsSelector from './_components/PeriodsSelector'
@@ -10,7 +11,7 @@ import { GetWorkflowExecutionStats } from '@/actions/analytics/getWorkflowExecut
 import ExecutionStatusChart from './_components/ExecutionStatusChart'
 import { GetCreditsUsageInPeriod } from '@/actions/analytics/getCreditsUsageInPeriod'
 import CreditUsageChart from '../billing/_components/CreditUsageChart'
-export const dynamic = "force-dynamic";
+
 
 
 const Homepage = ({ searchParams }: { searchParams: { month?: string, year?: string } }) => {

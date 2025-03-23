@@ -1,10 +1,11 @@
+export const dynamic = "force-dynamic";
 import { GetWorkflowExecutionWithPhases } from "@/actions/workflows/getWorkflowExecutionWithPhases";
 import Topbar from "@/app/workflow/_components/topbar/Topbar";
 import { auth } from "@clerk/nextjs/server";
 import { Loader2Icon } from "lucide-react";
 import { Suspense } from "react";
 import ExecutionViewer from "./_components/ExecutionViewer";
-export const dynamic = "force-dynamic";
+
 
 
 export default function ExecutionViewerPage({ params }: {

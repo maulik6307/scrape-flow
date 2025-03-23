@@ -1,3 +1,7 @@
+
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
 import prisma from "@/lib/prisma";
 import { ExecuteWorkflow } from "@/lib/workflow/executeWorkflow";
 import { TaskRegistry } from "@/lib/workflow/task/registry";
@@ -5,8 +9,6 @@ import { ExecutionPhaseStatus, WorkflowExecutionPlan, WorkflowExecutionStatus, W
 import { timingSafeEqual } from "crypto";
 import parser from "cron-parser"
 
-export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
 
 
 function isValidSecret(secret: string) {

@@ -1,4 +1,7 @@
-export const dynamic = 'force-dynamic';
+
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
 import { handleCheckoutSessionCompleted } from "@/lib/stripe/handleCheckoutSessionCompleted";
 import { stripe } from "@/lib/stripe/stripe"
 import { headers } from "next/headers"

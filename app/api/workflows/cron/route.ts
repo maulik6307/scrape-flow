@@ -1,9 +1,11 @@
+
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
 import { getAppUrl } from "@/lib/helper/appUrl"
 import prisma from "@/lib/prisma"
 import { WorkflowStatus } from "@/types/workflow"
 
-// Force dynamic rendering so Next.js doesn't treat this as a page for static generation
-export const dynamic = "force-dynamic";
 export async function GET(req: Request) {
     const now = new Date()
     const workflows = await prisma.workflow.findMany({

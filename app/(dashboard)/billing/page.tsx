@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { GetAvailableCredits } from "@/actions/billing/getAvailableCredits"
 import ReactCountWrapper from "@/components/ReactCountWrapper"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -10,7 +11,7 @@ import { GetCreditsUsageInPeriod } from "@/actions/analytics/getCreditsUsageInPe
 import CreditUsageChart from "./_components/CreditUsageChart"
 import { GetUserPurchaseHistory } from "@/actions/billing/getUserPurchaseHistory"
 import InvoiceBtn from "./_components/InvoiceBtn"
-export const dynamic = "force-dynamic";
+
 
 
 function BillingPage() {
