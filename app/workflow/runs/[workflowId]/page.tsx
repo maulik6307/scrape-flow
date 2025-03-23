@@ -2,6 +2,8 @@ import { GetWorkflowExecutions } from "@/actions/workflows/getWorkflowExecutions
 import Topbar from "../../_components/topbar/Topbar";
 import { InboxIcon } from "lucide-react";
 import ExecutionsTable from "./_components/ExecutionsTable";
+export const dynamic = "force-dynamic";
+
 
 export default function ExecutionsPage({ params }: { params: { workflowId: string } }) {
     return <div className="h-full w-full overflow-auto">
