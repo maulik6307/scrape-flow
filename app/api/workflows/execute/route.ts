@@ -4,6 +4,8 @@ import { TaskRegistry } from "@/lib/workflow/task/registry";
 import { ExecutionPhaseStatus, WorkflowExecutionPlan, WorkflowExecutionStatus, WorkflowExecutionTrigger } from "@/types/workflow";
 import { timingSafeEqual } from "crypto";
 import parser from "cron-parser"
+
+export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 
